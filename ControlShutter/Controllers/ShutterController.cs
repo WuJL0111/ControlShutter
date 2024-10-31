@@ -1,0 +1,128 @@
+using ControlShutter.Common;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
+
+namespace ControlShutter.Controllers
+{
+    [ApiController]
+    [Route("[controller]/[action]")]
+    public class ShutterController : ControllerBase
+    {
+        private readonly ILogger<ShutterController> _logger;
+
+        ShutterClass shutter = new ShutterClass();
+
+        Http http = new Http();
+
+        public ShutterController(ILogger<ShutterController> logger)
+        {
+            _logger = logger;
+        }
+
+        [HttpPost]
+        public TaskRequest ControlShutterAsync([FromBody] TaskReceive receive)
+        {
+            TaskRequest taskRequest = new TaskRequest();
+            try
+            {
+                Task.Run(async () =>
+                {
+                    switch (receive.taskType)
+                    {
+                        case TaskType.openDoor:
+                            _logger.LogInformation("接收到开门任务");
+                            OpenShutterTaskRequest openShutter = new OpenShutterTaskRequest();
+                            ShutterClass.Instance.Connet();
+                            ShutterClass.Instance.OpenDO(254, 0);
+                            await Task.Delay(2000);
+
+                            ShutterClass.Instance.Connet();
+                            ShutterClass.Instance.CloseDO(254, 0);
+                            await Task.Delay(90000);
+                            for (int i = 0; i < 10; i++)
+                            {
+                                byte[] rec = shutter.ReadDI(254, 0);
+                                if (rec == new byte[0])
+                                {
+                                    openShutter.code = 200;
+                                    openShutter.msg = "success";
+                                    _logger.LogInformation("开门任务成功完成");
+                                    openShutter.robotId = receive.robotId;
+                                    openShutter.robotType = 2;
+                                    openShutter.taskId = receive.taskId;
+                                    http.PostJson("http://192.168.30.212:9093/ApiAgvForWms/IntermediateTask", JsonConvert.SerializeObject(openShutter));
+                                }
+
+                                if (i == 9)
+                                {
+                                    openShutter.code = 500;
+                                    openShutter.msg = "fail";
+                                    _logger.LogError($"开门任务完成失败");
+                                    openShutter.robotId = receive.robotId;
+                                    openShutter.robotType = 2;
+                                    openShutter.taskId = receive.taskId;
+                                    http.PostJson("http://192.168.30.212:9093/ApiAgvForWms/IntermediateTask", JsonConvert.SerializeObject(openShutter));
+                                }
+                                Thread.Sleep(500);
+                            }
+                            break;
+                        case TaskType.closeDoor:
+                            _logger.LogInformation("接收到关门任务");
+                            CloseShutterTaskRequest closeShutter = new CloseShutterTaskRequest();
+                            closeShutter.startTime = DateTime.Now.ToString("yyyy-MMdd HH:mm:ss");
+                            ShutterClass.Instance.Connet();
+                            ShutterClass.Instance.OpenDO(254, 1);
+                            await Task.Delay(2000);
+
+                            ShutterClass.Instance.Connet();
+                            ShutterClass.Instance.CloseDO(254, 1);
+                            await Task.Delay(90000);
+                            for (int i = 0; i < 10; i++)
+                            {
+                                byte[] rec = shutter.ReadDI(254, 1);
+                                if (rec == new byte[0])
+                                {
+                                    closeShutter.executionStatus = 200;
+                                    closeShutter.feedbackMsg = "success";
+                                    _logger.LogInformation("关门任务成功完成");
+                                    closeShutter.robotId = receive.robotId;
+                                    closeShutter.taskId = receive.taskId;
+                                    closeShutter.endTime = DateTime.Now.ToString("yyyy-MMdd HH:mm:ss");
+                                    http.PostJson("http://192.168.30.212:9093/luoshu-rcs/rcs/task/completionFeedback", JsonConvert.SerializeObject(closeShutter));
+                                }
+
+                                if (i == 9)
+                                {
+                                    closeShutter.executionStatus = 500;
+                                    closeShutter.feedbackMsg = "fail";
+                                    _logger.LogError($"关门任务完成失败");
+                                    closeShutter.robotId = receive.robotId;
+                                    closeShutter.taskId = receive.taskId;
+                                    closeShutter.endTime = DateTime.Now.ToString("yyyy-MMdd HH:mm:ss");
+                                    http.PostJson("http://192.168.30.212:9093/luoshu-rcs/rcs/task/completionFeedback", JsonConvert.SerializeObject(closeShutter));
+                                }
+
+                                Thread.Sleep(500);
+                            }
+                            break;
+                        default:
+                            _logger.LogWarning($"开关门任务解析失败，{receive.taskType}");
+                            break;
+                    }
+                });
+                taskRequest.status = 200;
+                taskRequest.msg = "任务发送成功";
+                _logger.LogInformation($"任务ID{receive.taskId}下发成功!");
+                return taskRequest;
+            }
+            catch (Exception ex)
+            {
+                taskRequest.status = 500;
+                taskRequest.msg = "任务发送失败";
+                _logger.LogInformation($"任务ID{receive.taskId}下发失败!原因:{ex.Message}");
+                return taskRequest;
+            }
+        }
+    }
+}
