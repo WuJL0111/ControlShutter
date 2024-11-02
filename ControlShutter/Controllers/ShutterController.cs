@@ -39,11 +39,11 @@ namespace ControlShutter.Controllers
 
                             ShutterClass.Instance.Connet();
                             ShutterClass.Instance.CloseDO(254, 0);
-                            await Task.Delay(90000);
-                            for (int i = 0; i < 10; i++)
+                            await Task.Delay(75000);
+                            for (int i = 0; i < 5; i++)
                             {
-                                byte[] rec = shutter.ReadDI(254, 0);
-                                if (rec == new byte[0])
+                                byte[] rec = shutter.ReadDI(254, 2);
+                                if (rec == new byte[1] {0x01})
                                 {
                                     openShutter.code = 200;
                                     openShutter.msg = "success";
@@ -54,7 +54,7 @@ namespace ControlShutter.Controllers
                                     http.PostJson("http://192.168.30.212:9093/ApiAgvForWms/IntermediateTask", JsonConvert.SerializeObject(openShutter));
                                 }
 
-                                if (i == 9)
+                                if (i == 4)
                                 {
                                     openShutter.code = 500;
                                     openShutter.msg = "fail";
@@ -64,7 +64,7 @@ namespace ControlShutter.Controllers
                                     openShutter.taskId = receive.taskId;
                                     http.PostJson("http://192.168.30.212:9093/ApiAgvForWms/IntermediateTask", JsonConvert.SerializeObject(openShutter));
                                 }
-                                Thread.Sleep(500);
+                                Thread.Sleep(1000);
                             }
                             break;
                         case TaskType.closeDoor:
@@ -77,11 +77,11 @@ namespace ControlShutter.Controllers
 
                             ShutterClass.Instance.Connet();
                             ShutterClass.Instance.CloseDO(254, 1);
-                            await Task.Delay(90000);
-                            for (int i = 0; i < 10; i++)
+                            await Task.Delay(75000);
+                            for (int i = 0; i < 5; i++)
                             {
-                                byte[] rec = shutter.ReadDI(254, 1);
-                                if (rec == new byte[0])
+                                byte[] rec = shutter.ReadDI(254, 2);
+                                if (rec == new byte[1] {0x02})
                                 {
                                     closeShutter.executionStatus = 200;
                                     closeShutter.feedbackMsg = "success";
@@ -92,7 +92,7 @@ namespace ControlShutter.Controllers
                                     http.PostJson("http://192.168.30.212:9093/luoshu-rcs/rcs/task/completionFeedback", JsonConvert.SerializeObject(closeShutter));
                                 }
 
-                                if (i == 9)
+                                if (i == 4)
                                 {
                                     closeShutter.executionStatus = 500;
                                     closeShutter.feedbackMsg = "fail";
@@ -102,8 +102,7 @@ namespace ControlShutter.Controllers
                                     closeShutter.endTime = DateTime.Now.ToString("yyyy-MMdd HH:mm:ss");
                                     http.PostJson("http://192.168.30.212:9093/luoshu-rcs/rcs/task/completionFeedback", JsonConvert.SerializeObject(closeShutter));
                                 }
-
-                                Thread.Sleep(500);
+                                Thread.Sleep(1000);
                             }
                             break;
                         default:
