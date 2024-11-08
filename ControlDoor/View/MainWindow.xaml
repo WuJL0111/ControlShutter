@@ -1,0 +1,67 @@
+﻿<Window x:Class="ControlDoor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ControlDoor"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="800" Width="1250"
+        FontFamily="Microsoft YaHei" FontWeight="ExtraLight" FontSize="12"
+        WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True" Background="{x:Null}">
+    <Window.Resources>
+        <ResourceDictionary Source="D:/wujialiang/07_烟台巷道堆垛机项目/ControlDoor/ControlDoor/Assets/Fonts/iconfont.ttf">
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <Style TargetType="RadioButton" x:Key="NavButtonStyle">
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="RadioButton">
+                                    <Border Background="Transparent" CornerRadius="8" Name="back">
+                                        <ContentControl Content="{TemplateBinding Content}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20,4" FontSize="13"/>
+                                    </Border>
+
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter TargetName="back" Property="Background" Value="#44FFFFFF"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    <Border Background="White" CornerRadius="5" Margin="5">
+        <Border.Effect>
+            <DropShadowEffect Color="Gray" ShadowDepth="0" BlurRadius="5" Opacity="0.3" Direction="0"/>
+        </Border.Effect>
+        <Grid>
+            <Border Background="#007DFA" Height="200" VerticalAlignment="Top" CornerRadius="5,5,0,0"/>
+            
+            <!--窗口控制-->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right">
+                <Button Style="{StaticResource WinodwControlButtonStyle}" Content="&#xe67a;"/>
+                <Button Style="{StaticResource WinodwControlButtonStyle}" Content="&#xe653;"/>
+                <Button Style="{StaticResource WinodwControlButtonStyle}" Content="&#xeaf2;"/>
+            </StackPanel>
+
+            <Grid Margin="50,20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="65"/>
+                    <RowDefinition Height="35"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <RadioButton Content="门控状态" Style="{StaticResource NavButtonStyle}" IsChecked="True"/>
+                    <RadioButton Content="控制门1" Style="{StaticResource NavButtonStyle}"/>
+                    <RadioButton Content="控制门2" Style="{StaticResource NavButtonStyle}"/>
+                </StackPanel>
+            </Grid>
+        </Grid>        
+    </Border>
+</Window>
