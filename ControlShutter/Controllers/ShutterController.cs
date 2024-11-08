@@ -11,8 +11,6 @@ namespace ControlShutter.Controllers
     {
         private readonly ILogger<ShutterController> _logger;
 
-        ShutterClass shutter = new ShutterClass();
-
         Http http = new Http();
 
         public ShutterController(ILogger<ShutterController> logger)
@@ -41,32 +39,35 @@ namespace ControlShutter.Controllers
                             ShutterClass.Instance.CloseDO(254, 0);
                             _logger.LogInformation("开门信号取消");
                             Thread.Sleep(85000);
-                            for (int i = 0; i < 5; i++)
+                            for (int i = 0; i < 10; i++)
                             {
-                                string rec = BitConverter.ToString(shutter.ReadDI(254, 2));
-                                _logger.LogInformation($"接收到消息为：{rec}");
-                                if (rec == "01")
+                                if (ShutterClass.Instance.ReadDI(254, 2) != null)
                                 {
-                                    openShutter.code = 200;
-                                    openShutter.msg = "success";
-                                    _logger.LogInformation("开门任务成功完成");
-                                    openShutter.robotId = receive.robotId;
-                                    openShutter.robotType = 2;
-                                    openShutter.taskId = receive.taskId;
-                                    http.PostJson("http://192.168.30.212:9093/luoshu-rcs/ApiAgvForWms/IntermediateTask", JsonConvert.SerializeObject(openShutter));
-                                }
+                                    string rec = BitConverter.ToString(ShutterClass.Instance.ReadDI(254, 2));
+                                    _logger.LogInformation($"接收到消息为：{rec}");
+                                    if (rec == "01")
+                                    {
+                                        openShutter.code = 200;
+                                        openShutter.msg = "success";
+                                        _logger.LogInformation("开门任务成功完成");
+                                        openShutter.robotId = receive.robotId;
+                                        openShutter.robotType = 2;
+                                        openShutter.taskId = receive.taskId;
+                                        http.PostJson("http://192.168.30.212:9093/luoshu-rcs/ApiAgvForWms/IntermediateTask", JsonConvert.SerializeObject(openShutter));
+                                    }
 
-                                if (i == 4)
-                                {
-                                    openShutter.code = 500;
-                                    openShutter.msg = "fail";
-                                    _logger.LogError($"开门任务完成失败");
-                                    openShutter.robotId = receive.robotId;
-                                    openShutter.robotType = 2;
-                                    openShutter.taskId = receive.taskId;
-                                    http.PostJson("http://192.168.30.212:9093/luoshu-rcs/ApiAgvForWms/IntermediateTask", JsonConvert.SerializeObject(openShutter));
+                                    if (i == 9)
+                                    {
+                                        openShutter.code = 500;
+                                        openShutter.msg = "fail";
+                                        _logger.LogError($"开门任务完成失败");
+                                        openShutter.robotId = receive.robotId;
+                                        openShutter.robotType = 2;
+                                        openShutter.taskId = receive.taskId;
+                                        http.PostJson("http://192.168.30.212:9093/luoshu-rcs/ApiAgvForWms/IntermediateTask", JsonConvert.SerializeObject(openShutter));
+                                    }
                                 }
-                                Thread.Sleep(1000);
+                                Thread.Sleep(3000);
                             }
                             break;
                         case TaskType.closeDoor:
@@ -81,32 +82,35 @@ namespace ControlShutter.Controllers
                             ShutterClass.Instance.CloseDO(254, 1);
                             _logger.LogInformation("关门信号取消");
                             Thread.Sleep(85000);
-                            for (int i = 0; i < 5; i++)
+                            for (int i = 0; i < 10; i++)
                             {
-                                string rec = BitConverter.ToString(shutter.ReadDI(254, 2));
-                                _logger.LogInformation($"接收到消息为：{rec}");
-                                if (rec == "02")
+                                if (ShutterClass.Instance.ReadDI(254, 2) != null)
                                 {
-                                    closeShutter.executionStatus = 200;
-                                    closeShutter.feedbackMsg = "success";
-                                    _logger.LogInformation("关门任务成功完成");
-                                    closeShutter.robotId = receive.robotId;
-                                    closeShutter.taskId = receive.taskId;
-                                    closeShutter.endTime = DateTime.Now.ToString("yyyy-MMdd HH:mm:ss");
-                                    http.PostJson("http://192.168.30.212:9093/luoshu-rcs/rcs/task/completionFeedback", JsonConvert.SerializeObject(closeShutter));
-                                }
+                                    string rec = BitConverter.ToString(ShutterClass.Instance.ReadDI(254, 2));
+                                    _logger.LogInformation($"接收到消息为：{rec}");
+                                    if (rec == "02")
+                                    {
+                                        closeShutter.executionStatus = 200;
+                                        closeShutter.feedbackMsg = "success";
+                                        _logger.LogInformation("关门任务成功完成");
+                                        closeShutter.robotId = receive.robotId;
+                                        closeShutter.taskId = receive.taskId;
+                                        closeShutter.endTime = DateTime.Now.ToString("yyyy-MMdd HH:mm:ss");
+                                        http.PostJson("http://192.168.30.212:9093/luoshu-rcs/rcs/task/completionFeedback", JsonConvert.SerializeObject(closeShutter));
+                                    }
 
-                                if (i == 4)
-                                {
-                                    closeShutter.executionStatus = 500;
-                                    closeShutter.feedbackMsg = "fail";
-                                    _logger.LogError($"关门任务完成失败");
-                                    closeShutter.robotId = receive.robotId;
-                                    closeShutter.taskId = receive.taskId;
-                                    closeShutter.endTime = DateTime.Now.ToString("yyyy-MMdd HH:mm:ss");
-                                    http.PostJson("http://192.168.30.212:9093/luoshu-rcs/rcs/task/completionFeedback", JsonConvert.SerializeObject(closeShutter));
+                                    if (i == 9)
+                                    {
+                                        closeShutter.executionStatus = 500;
+                                        closeShutter.feedbackMsg = "fail";
+                                        _logger.LogError($"关门任务完成失败");
+                                        closeShutter.robotId = receive.robotId;
+                                        closeShutter.taskId = receive.taskId;
+                                        closeShutter.endTime = DateTime.Now.ToString("yyyy-MMdd HH:mm:ss");
+                                        http.PostJson("http://192.168.30.212:9093/luoshu-rcs/rcs/task/completionFeedback", JsonConvert.SerializeObject(closeShutter));
+                                    }
                                 }
-                                Thread.Sleep(1000);
+                                Thread.Sleep(3000);
                             }
                             break;
                         default:
