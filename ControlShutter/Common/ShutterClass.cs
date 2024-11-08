@@ -69,7 +69,7 @@ namespace ControlShutter.Common
         {
             tclient?.Close();
             tclient = new TcpClient();
-            tclient.Connect("192.168.1.232", 10000);
+            tclient.Connect("192.168.10.23", 10000);
             ns1 = tclient.GetStream();
             ns2 = tclient.GetStream();
             return true; 

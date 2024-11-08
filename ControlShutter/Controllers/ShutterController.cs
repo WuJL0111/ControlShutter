@@ -39,11 +39,13 @@ namespace ControlShutter.Controllers
 
                             ShutterClass.Instance.Connet();
                             ShutterClass.Instance.CloseDO(254, 0);
-                            await Task.Delay(75000);
+                            _logger.LogInformation("开门信号取消");
+                            Thread.Sleep(85000);
                             for (int i = 0; i < 5; i++)
                             {
-                                byte[] rec = shutter.ReadDI(254, 2);
-                                if (rec == new byte[1] {0x01})
+                                string rec = BitConverter.ToString(shutter.ReadDI(254, 2));
+                                _logger.LogInformation($"接收到消息为：{rec}");
+                                if (rec == "01")
                                 {
                                     openShutter.code = 200;
                                     openShutter.msg = "success";
@@ -51,7 +53,7 @@ namespace ControlShutter.Controllers
                                     openShutter.robotId = receive.robotId;
                                     openShutter.robotType = 2;
                                     openShutter.taskId = receive.taskId;
-                                    http.PostJson("http://192.168.30.212:9093/ApiAgvForWms/IntermediateTask", JsonConvert.SerializeObject(openShutter));
+                                    http.PostJson("http://192.168.30.212:9093/luoshu-rcs/ApiAgvForWms/IntermediateTask", JsonConvert.SerializeObject(openShutter));
                                 }
 
                                 if (i == 4)
@@ -62,7 +64,7 @@ namespace ControlShutter.Controllers
                                     openShutter.robotId = receive.robotId;
                                     openShutter.robotType = 2;
                                     openShutter.taskId = receive.taskId;
-                                    http.PostJson("http://192.168.30.212:9093/ApiAgvForWms/IntermediateTask", JsonConvert.SerializeObject(openShutter));
+                                    http.PostJson("http://192.168.30.212:9093/luoshu-rcs/ApiAgvForWms/IntermediateTask", JsonConvert.SerializeObject(openShutter));
                                 }
                                 Thread.Sleep(1000);
                             }
@@ -77,11 +79,13 @@ namespace ControlShutter.Controllers
 
                             ShutterClass.Instance.Connet();
                             ShutterClass.Instance.CloseDO(254, 1);
-                            await Task.Delay(75000);
+                            _logger.LogInformation("关门信号取消");
+                            Thread.Sleep(85000);
                             for (int i = 0; i < 5; i++)
                             {
-                                byte[] rec = shutter.ReadDI(254, 2);
-                                if (rec == new byte[1] {0x02})
+                                string rec = BitConverter.ToString(shutter.ReadDI(254, 2));
+                                _logger.LogInformation($"接收到消息为：{rec}");
+                                if (rec == "02")
                                 {
                                     closeShutter.executionStatus = 200;
                                     closeShutter.feedbackMsg = "success";
