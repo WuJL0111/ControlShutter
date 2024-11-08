@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace ControlDoor
+namespace ControlDoors
 {
     /// <summary>
     /// Interaction logic for App.xaml
