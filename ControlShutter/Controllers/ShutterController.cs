@@ -96,7 +96,7 @@ namespace ControlShutter.Controllers
                                         closeShutter.robotId = receive.robotId;
                                         closeShutter.taskId = receive.taskId;
                                         closeShutter.endTime = DateTime.Now.ToString("yyyy-MMdd HH:mm:ss");
-                                        http.PostJson("http://192.168.30.212:9093/luoshu-rcs/rcs/task/completionFeedback", JsonConvert.SerializeObject(closeShutter));
+                                        http.PostJson("http://192.168.30.212:9093/luoshrcs/rcs/task/completionFeedback", JsonConvert.SerializeObject(closeShutter));
                                     }
 
                                     if (i == 9)
