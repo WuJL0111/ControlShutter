@@ -125,18 +125,18 @@
                        Grid.Row="3" Grid.Column="1"/>
             <TextBlock Text="在  线" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30"
                        Grid.Row="1" Grid.Column="2"/>
-            <Ellipse Width="30" Height="30" Fill="LightGreen" Grid.Row="2" Grid.Column="2"/>
-            <Ellipse Width="30" Height="30" Fill="LightGreen" Grid.Row="3" Grid.Column="2"/>
+            <Ellipse x:Name="PullDoorOnlineCircle" Width="30" Height="30" Fill="Gray" Grid.Row="2" Grid.Column="2"/>
+            <Ellipse x:Name="ShutterDoorOnlineCircle" Width="30" Height="30" Fill="Gray" Grid.Row="3" Grid.Column="2"/>
             <TextBlock Text="离  线" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30"
                        Grid.Row="1" Grid.Column="3"/>
-            <Ellipse Width="30" Height="30" Fill="OrangeRed" Grid.Row="2" Grid.Column="3"/>
-            <Ellipse Width="30" Height="30" Fill="OrangeRed" Grid.Row="3" Grid.Column="3"/>
-            <Button x:Name="ConnectDoor1" Content="重新连接" HorizontalAlignment="Center" VerticalAlignment="Center"
+            <Ellipse x:Name="PullDoorOfflineCircle" Width="30" Height="30" Fill="OrangeRed" Grid.Row="2" Grid.Column="3"/>
+            <Ellipse x:Name="ShutterDoorOfflineCircle" Width="30" Height="30" Fill="OrangeRed" Grid.Row="3" Grid.Column="3"/>
+            <Button x:Name="ConnectPullDoor" Content="连 接" HorizontalAlignment="Center" VerticalAlignment="Center"
                     Width="150" Height="50" Grid.Row="2" Grid.Column="4"
-                    FontSize="23" FontWeight="Heavy" FontFamily="Microsoft YaHei"/>
-            <Button x:Name="ConnectDoor2" Content="重新连接" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    FontSize="23" FontWeight="Heavy" FontFamily="Microsoft YaHei" Click="ConnectPullDoor_Click"/>
+            <Button x:Name="ConnectShutterDoor" Content="连 接" HorizontalAlignment="Center" VerticalAlignment="Center"
                     Width="150" Height="50" Grid.Row="3" Grid.Column="4"
-                    FontSize="23" FontWeight="Heavy" FontFamily="Microsoft YaHei"/>
+                    FontSize="23" FontWeight="Heavy" FontFamily="Microsoft YaHei" Click="ConnectShutterDoor_Click"/>
         </Grid>
     </Grid>
 </UserControl>

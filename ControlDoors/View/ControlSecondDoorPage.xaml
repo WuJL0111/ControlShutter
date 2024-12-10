@@ -7,6 +7,22 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <TextBlock Text="2号门" FontSize="30"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="95"/>
+            <RowDefinition Height="355"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="开关门动画" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30"/>
+            <TextBlock Text="开关门按钮" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30"/>
+        </Grid>
     </Grid>
 </UserControl>

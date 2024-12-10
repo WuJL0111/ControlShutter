@@ -14,7 +14,15 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="1">
-            <TextBlock Text="e" FontSize="35"/>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="开关门动画" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30"/>
+            <TextBlock Text="开关门按钮" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30"/>
         </Grid>
     </Grid>
 </UserControl>
