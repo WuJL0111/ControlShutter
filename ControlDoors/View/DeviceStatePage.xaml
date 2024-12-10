@@ -4,14 +4,100 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ControlDoors.View"
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              mc:Ignorable="d" 
-             d:DesignHeight="800" d:DesignWidth="1250">
+             d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="70"/>
-            <RowDefinition Height="500"/>
-            <RowDefinition/>
+            <RowDefinition Height="160"/>
+            <RowDefinition Height="360"/>
         </Grid.RowDefinitions>
+
+        <UniformGrid Columns="5">
+            <Border Background="Transparent"/>
+            <Border CornerRadius="5" Background="White" Margin="10">
+                <Border.Effect>
+                    <DropShadowEffect Color="#F2F2F2" ShadowDepth="10" BlurRadius="105" Opacity="0.3" Direction="270"/>
+                </Border.Effect>
+                <Grid>
+                    <lvc:CartesianChart Margin="0,0,0,45">
+                        <lvc:CartesianChart.Series>
+                            <lvc:LineSeries Stroke="#FECC71" Fill="#FFF2DE"
+                                            PointGeometrySize="0"
+                                            Values="1,2,3,40,5,6,7"/>
+                        </lvc:CartesianChart.Series>
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis ShowLabels="False"/>
+                        </lvc:CartesianChart.AxisX>
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis ShowLabels="False" MinValue="0" MaxValue="100"/>
+                        </lvc:CartesianChart.AxisY>
+                    </lvc:CartesianChart>
+
+                    <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="15">
+                        <Border Width="20" Height="20" Background="#FFF2DE" CornerRadius="5">
+                            <TextBlock Text="&#xe62a;" FontFamily="../Assets/Fonts/#iconfont"
+                                       Foreground="#FECC71" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Margin="15,3">
+                        <Border Width="36" Height="36" Background="#FFF5E9" CornerRadius="10">
+                            <TextBlock Text="&#xe76a;" FontFamily="../Assets/Fonts/#iconfont"
+                                       VerticalAlignment="Center" HorizontalAlignment="Center"
+                                       FontSize="20" Foreground="#FFBC57"/>
+                        </Border>
+
+                        <StackPanel>
+                            <TextBlock Text="推拉门" Foreground="#3F4C5D" FontSize="15" Margin="10,0,0,0" FontWeight="Bold"/>
+                            <TextBlock Text="使用次数" Foreground="#3F4C5D" FontSize="15" Margin="10,0,0,0" FontWeight="Bold"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Border Background="Transparent"/>
+            <Border CornerRadius="5" Background="White" Margin="10">
+                <Border.Effect>
+                    <DropShadowEffect Color="#F2F2F2" ShadowDepth="10" BlurRadius="105" Opacity="0.3" Direction="270"/>
+                </Border.Effect>
+                <Grid>
+                    <lvc:CartesianChart Margin="0,0,0,45">
+                        <lvc:CartesianChart.Series>
+                            <lvc:LineSeries Stroke="#FECC71" Fill="#FFF2DE"
+                                            PointGeometrySize="0"
+                                            Values="1,2,3,40,5,6,7"/>
+                        </lvc:CartesianChart.Series>
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis ShowLabels="False"/>
+                        </lvc:CartesianChart.AxisX>
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis ShowLabels="False" MinValue="0" MaxValue="100"/>
+                        </lvc:CartesianChart.AxisY>
+                    </lvc:CartesianChart>
+
+                    <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Margin="15">
+                        <Border Width="20" Height="20" Background="#FFF2DE" CornerRadius="5">
+                            <TextBlock Text="&#xe62a;" FontFamily="../Assets/Fonts/#iconfont"
+                                       Foreground="#FECC71" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Margin="15,3">
+                        <Border Width="36" Height="36" Background="#FFF5E9" CornerRadius="10">
+                            <TextBlock Text="&#xe675;" FontFamily="../Assets/Fonts/#iconfont"
+                                       VerticalAlignment="Center" HorizontalAlignment="Center"
+                                       FontSize="20" Foreground="#FFBC57"/>
+                        </Border>
+
+                        <StackPanel>
+                            <TextBlock Text="卷帘门" Foreground="#3F4C5D" FontSize="15" Margin="10,0,0,0" FontWeight="Bold"/>
+                            <TextBlock Text="使用次数" Foreground="#3F4C5D" FontSize="15" Margin="10,0,0,0" FontWeight="Bold"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Border Background="Transparent"/>
+        </UniformGrid>
 
         <Grid Grid.Row="1" Margin="20">
             <Grid.ColumnDefinitions>
@@ -28,7 +114,6 @@
                 <RowDefinition Height="2*"/>
                 <RowDefinition Height="2*"/>
                 <RowDefinition Height="2*"/>
-                <RowDefinition Height="2*"/>
                 <RowDefinition Height="0.5*"/>
             </Grid.RowDefinitions>
 
@@ -38,26 +123,19 @@
                        Grid.Row="2" Grid.Column="1"/>
             <TextBlock Text="门控2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30"
                        Grid.Row="3" Grid.Column="1"/>
-            <TextBlock Text="门控3" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30"
-                       Grid.Row="4" Grid.Column="1"/>
             <TextBlock Text="在  线" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30"
                        Grid.Row="1" Grid.Column="2"/>
             <Ellipse Width="30" Height="30" Fill="LightGreen" Grid.Row="2" Grid.Column="2"/>
             <Ellipse Width="30" Height="30" Fill="LightGreen" Grid.Row="3" Grid.Column="2"/>
-            <Ellipse Width="30" Height="30" Fill="LightGreen" Grid.Row="4" Grid.Column="2"/>
             <TextBlock Text="离  线" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30"
                        Grid.Row="1" Grid.Column="3"/>
             <Ellipse Width="30" Height="30" Fill="OrangeRed" Grid.Row="2" Grid.Column="3"/>
             <Ellipse Width="30" Height="30" Fill="OrangeRed" Grid.Row="3" Grid.Column="3"/>
-            <Ellipse Width="30" Height="30" Fill="OrangeRed" Grid.Row="4" Grid.Column="3"/>
-            <Button Content="重新连接" HorizontalAlignment="Center" VerticalAlignment="Center"
+            <Button x:Name="ConnectDoor1" Content="重新连接" HorizontalAlignment="Center" VerticalAlignment="Center"
                     Width="150" Height="50" Grid.Row="2" Grid.Column="4"
                     FontSize="23" FontWeight="Heavy" FontFamily="Microsoft YaHei"/>
-            <Button Content="重新连接" HorizontalAlignment="Center" VerticalAlignment="Center"
+            <Button x:Name="ConnectDoor2" Content="重新连接" HorizontalAlignment="Center" VerticalAlignment="Center"
                     Width="150" Height="50" Grid.Row="3" Grid.Column="4"
-                    FontSize="23" FontWeight="Heavy" FontFamily="Microsoft YaHei"/>
-            <Button Content="重新连接" HorizontalAlignment="Center" VerticalAlignment="Center"
-                    Width="150" Height="50" Grid.Row="4" Grid.Column="4"
                     FontSize="23" FontWeight="Heavy" FontFamily="Microsoft YaHei"/>
         </Grid>
     </Grid>

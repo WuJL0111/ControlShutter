@@ -29,7 +29,7 @@ namespace ControlDoors
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if(e.LeftButton==MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed)
                 this.DragMove();
         }
 
@@ -40,7 +40,7 @@ namespace ControlDoors
 
         private void btnMax_Click(object sender, RoutedEventArgs e)
         {
-            this.WindowState = this.WindowState == WindowState.Maximized ? 
+            this.WindowState = this.WindowState == WindowState.Maximized ?
                 WindowState.Normal : WindowState.Maximized;
         }
 

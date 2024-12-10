@@ -73,8 +73,6 @@
                                  Command="{Binding NavChangedCommand}" CommandParameter="ControlFirstDoorPage"/>
                     <RadioButton Content="控制门2" Style="{StaticResource NavButtonStyle}"
                                  Command="{Binding NavChangedCommand}" CommandParameter="ControlSecondDoorPage"/>
-                    <RadioButton Content="控制门3" Style="{StaticResource NavButtonStyle}"
-                                 Command="{Binding NavChangedCommand}" CommandParameter="ControlThirdDoorPage"/>
                 </StackPanel>
 
                 <ContentControl Grid.Row="2" Content="{Binding MainContent}"/>
