@@ -11,6 +11,8 @@
 
   <ItemGroup>
     <None Remove="Assets\Fonts\iconfont.ttf" />
+    <None Remove="Assets\Images\1.png" />
+    <None Remove="Resource\logo.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,16 +20,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Assets\Images\" />
+    <Resource Include="Assets\Images\1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Assets\Fonts\iconfont.ttf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
 

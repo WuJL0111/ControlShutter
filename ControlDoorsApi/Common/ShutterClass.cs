@@ -65,14 +65,25 @@ namespace ControlDoorsApi.Common
             }
 
         }
-        public bool Connet()
+
+        public bool ConnetPullDoor()
         {
             tclient?.Close();
             tclient = new TcpClient();
-            tclient.Connect("192.168.10.23", 10000);
+            tclient.Connect("192.168.20.91", 10000);
             ns1 = tclient.GetStream();
             ns2 = tclient.GetStream();
-            return true; 
+            return true;
+        }
+
+        public bool ConnetShutterDoor()
+        {
+            tclient?.Close();
+            tclient = new TcpClient();
+            tclient.Connect("192.168.20.93", 10000);
+            ns1 = tclient.GetStream();
+            ns2 = tclient.GetStream();
+            return true;
         }
 
         public void JYDisconnect()

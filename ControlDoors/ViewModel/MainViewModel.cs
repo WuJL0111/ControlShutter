@@ -27,7 +27,7 @@ namespace ControlDoors.ViewModel
             this.NavChangedCommand.DoExecute = new Action<object>(DoNavChanged);
             this.NavChangedCommand.DoCanExecute = new Func<object, bool>((o) => true);
 
-            DoNavChanged("DeviceStatePage");
+            DoNavChanged("ControlPullDoorPage");
         }
 
         private void DoNavChanged(object obj)
