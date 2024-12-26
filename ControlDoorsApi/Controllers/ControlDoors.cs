@@ -1,4 +1,5 @@
 ﻿using ControlDoorsApi.Common;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -17,6 +18,7 @@ namespace ControlDoorsApi.Controllers
             _logger = logger;
         }
 
+        [EnableCors("ControlDoor")]
         [HttpPost]
         public TaskRequest ControlPullDoor([FromBody] TaskReceive receive)
         {
@@ -134,6 +136,7 @@ namespace ControlDoorsApi.Controllers
             }
         }
 
+        [EnableCors("ControlDoor")]
         [HttpPost]
         public TaskRequest ControlShutterDoor([FromBody] TaskReceive receive)
         {
