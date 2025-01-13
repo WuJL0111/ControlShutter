@@ -71,6 +71,14 @@ namespace ControlDoorsApi.Controllers
                             //    }
                             //    Thread.Sleep(3000);
                             //}
+                            Thread.Sleep(1000 * 60 * 2);
+                            ShutterClass.Instance.ConnetPullDoor();
+                            ShutterClass.Instance.OpenDO(254, 0);
+                            await Task.Delay(2000);
+
+                            ShutterClass.Instance.ConnetPullDoor();
+                            ShutterClass.Instance.CloseDO(254, 0);
+
                             break;
                         case TaskType.closeDoor:
                             _logger.LogInformation("接收到关门任务");
