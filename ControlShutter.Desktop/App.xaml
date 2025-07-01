@@ -1,0 +1,73 @@
+<Application x:Class="ControlShutter.Desktop.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="Views/MainWindow.xaml">
+    
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- 主题样式 -->
+                <ResourceDictionary Source="Styles/ButtonStyles.xaml"/>
+                <ResourceDictionary Source="Styles/TextStyles.xaml"/>
+                <ResourceDictionary Source="Styles/LayoutStyles.xaml"/>
+                <ResourceDictionary Source="Styles/ColorStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- 全局样式 -->
+            <Style TargetType="Window">
+                <Setter Property="Background" Value="{StaticResource PrimaryBackgroundBrush}"/>
+                <Setter Property="FontFamily" Value="Microsoft YaHei UI"/>
+                <Setter Property="FontSize" Value="14"/>
+            </Style>
+
+            <!-- 状态指示器样式 -->
+            <Style x:Key="StatusIndicatorStyle" TargetType="Ellipse">
+                <Setter Property="Width" Value="12"/>
+                <Setter Property="Height" Value="12"/>
+                <Setter Property="Stroke" Value="Gray"/>
+                <Setter Property="StrokeThickness" Value="1"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                        <Setter Property="Fill" Value="LimeGreen"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsConnected}" Value="False">
+                        <Setter Property="Fill" Value="Red"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <!-- 加载动画 -->
+            <Storyboard x:Key="LoadingAnimation">
+                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                 From="0" To="360" Duration="0:0:1" RepeatBehavior="Forever"/>
+            </Storyboard>
+
+            <!-- 数据模板 -->
+            <DataTemplate x:Key="DeviceStatusTemplate">
+                <Border Background="White" CornerRadius="8" Margin="5" Padding="15">
+                    <Border.Effect>
+                        <DropShadowEffect Color="Gray" ShadowDepth="2" BlurRadius="5" Opacity="0.3"/>
+                    </Border.Effect>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Ellipse Grid.Column="0" Style="{StaticResource StatusIndicatorStyle}" 
+                                 VerticalAlignment="Center" Margin="0,0,10,0"/>
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding DeviceType}" FontWeight="Bold" FontSize="16"/>
+                            <TextBlock Text="{Binding StatusText}" Foreground="Gray" FontSize="12"/>
+                        </StackPanel>
+
+                        <TextBlock Grid.Column="2" Text="{Binding LastUpdateTime, StringFormat='HH:mm:ss'}" 
+                                   Foreground="Gray" FontSize="10" VerticalAlignment="Bottom"/>
+                    </Grid>
+                </Border>
+            </DataTemplate>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
