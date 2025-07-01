@@ -1,0 +1,171 @@
+version: '3.8'
+
+services:
+  # 门控制 API 服务
+  control-shutter-api:
+    build:
+      context: .
+      dockerfile: ControlShutter.Api/Dockerfile
+    container_name: control-shutter-api
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - TZ=Asia/Shanghai
+      # 数据库连接（如需要）
+      # - ConnectionStrings__DefaultConnection=Server=postgres;Database=ControlShutter;User Id=postgres;Password=yourpassword;
+    volumes:
+      # 配置文件挂载
+      - ./config/appsettings.Production.json:/app/appsettings.Production.json:ro
+      # 日志目录
+      - ./logs:/app/logs
+    networks:
+      - control-shutter-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    depends_on:
+      - postgres
+      - redis
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # PostgreSQL 数据库（可选，用于存储任务历史等）
+  postgres:
+    image: postgres:15-alpine
+    container_name: control-shutter-postgres
+    environment:
+      - POSTGRES_DB=ControlShutter
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=yourpassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    networks:
+      - control-shutter-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis 缓存（可选，用于缓存设备状态等）
+  redis:
+    image: redis:7-alpine
+    container_name: control-shutter-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./config/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      - control-shutter-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # Nginx 反向代理（可选）
+  nginx:
+    image: nginx:alpine
+    container_name: control-shutter-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - ./logs/nginx:/var/log/nginx
+    networks:
+      - control-shutter-network
+    restart: unless-stopped
+    depends_on:
+      - control-shutter-api
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Prometheus 监控（可选）
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: control-shutter-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    networks:
+      - control-shutter-network
+    restart: unless-stopped
+
+  # Grafana 仪表板（可选）
+  grafana:
+    image: grafana/grafana:latest
+    container_name: control-shutter-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./config/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./config/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    networks:
+      - control-shutter-network
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+networks:
+  control-shutter-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+# 配置文件示例
+# 创建以下目录结构：
+# config/
+# ├── appsettings.Production.json
+# ├── nginx.conf
+# ├── redis.conf
+# ├── prometheus.yml
+# └── grafana/
+#     ├── dashboards/
+#     └── datasources/
+# logs/
+# ssl/
+# scripts/
+# └── init.sql
