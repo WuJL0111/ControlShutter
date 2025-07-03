@@ -223,10 +223,10 @@ public class DeviceConnection : IDeviceConnection
     /// </summary>
     /// <param name="cancellationToken">取消令牌</param>
     /// <returns>是否健康</returns>
-    public async Task<bool> CheckHealthAsync(CancellationToken cancellationToken = default)
+    public Task<bool> CheckHealthAsync(CancellationToken cancellationToken = default)
     {
         if (!IsConnected)
-            return false;
+            return Task.FromResult(false);
 
         try
         {
@@ -235,14 +235,14 @@ public class DeviceConnection : IDeviceConnection
             if (tcpClient.Client.Poll(1000, SelectMode.SelectRead) && tcpClient.Available == 0)
             {
                 // 连接已断开
-                return false;
+                return Task.FromResult(false);
             }
 
-            return true;
+            return Task.FromResult(true);
         }
         catch
         {
-            return false;
+            return Task.FromResult(false);
         }
     }
 
