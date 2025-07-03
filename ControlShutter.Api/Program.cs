@@ -126,7 +126,7 @@ try
 }
 catch (Exception ex)
 {
-    var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+    var logger = NLog.LogManager.GetCurrentClassLogger();
     logger.Error(ex, "应用程序启动失败");
     throw;
 }
