@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using ControlShutter.Core.Extensions;
+using ControlShutter.Core.HealthChecks;
 using ControlShutter.Shared.Configuration;
 using FluentValidation;
 using FluentValidation.AspNetCore;

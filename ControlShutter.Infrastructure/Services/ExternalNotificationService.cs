@@ -47,23 +47,34 @@ public class ExternalNotificationService : IExternalNotificationService
 
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             
-            using var response = await _httpClient.PostAsync(_options.NotificationUrl, content, cancellationToken);
+            // 根据通知的执行状态决定使用哪个URL
+            var url = notification.ExecutionStatus == 1 
+                ? _options.OpenDoorNotificationUrl 
+                : _options.CloseDoorNotificationUrl;
+                
+            if (string.IsNullOrEmpty(url))
+            {
+                _logger.LogWarning("未配置通知URL，跳过发送: TaskId={TaskId}", notification.TaskId);
+                return true;
+            }
+            
+            using var response = await _httpClient.PostAsync(url, content, cancellationToken);
             
             if (response.IsSuccessStatusCode)
             {
-                _logger.LogInformation("外部通知发送成功: {TaskId}", notification.TaskId);
+                _logger.LogInformation("外部通知发送成功: TaskId={TaskId}", notification.TaskId);
                 return true;
             }
             else
             {
-                _logger.LogWarning("外部通知发送失败: {TaskId}, 状态码: {StatusCode}", 
+                _logger.LogWarning("外部通知发送失败: TaskId={TaskId}, 状态码: {StatusCode}", 
                     notification.TaskId, response.StatusCode);
                 return false;
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "发送外部通知时发生异常: {TaskId}", notification.TaskId);
+            _logger.LogError(ex, "发送外部通知时发生异常: TaskId={TaskId}", notification.TaskId);
             return false;
         }
     }
@@ -75,18 +86,17 @@ public class ExternalNotificationService : IExternalNotificationService
     {
         var notification = new ExternalNotification
         {
-            TaskId = taskReceive.TaskId,
-            RobotId = taskReceive.RobotId,
-            DeviceType = taskReceive.DeviceType,
-            TaskType = taskReceive.TaskType,
-            IsSuccess = isSuccess,
+            Code = isSuccess ? 200 : 500,
             Message = message,
-            CompletedAt = DateTime.Now,
-            Data = new Dictionary<string, object>
-            {
-                ["action"] = "open_door",
-                ["deviceType"] = taskReceive.DeviceType.ToString()
-            }
+            TaskId = taskReceive.TaskId ?? 0,
+            RobotId = taskReceive.RobotId ?? 0,
+            RobotType = 2,
+            ExecutionStatus = 1, // 开门状态
+            FeedbackMessage = message,
+            StartTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+            EndTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+            VisionResult = isSuccess,
+            RfidResult = new List<string>()
         };
 
         return await SendTaskCompletionNotificationAsync(notification, cancellationToken);
@@ -99,20 +109,18 @@ public class ExternalNotificationService : IExternalNotificationService
     {
         var notification = new ExternalNotification
         {
-            TaskId = taskReceive.TaskId,
-            RobotId = taskReceive.RobotId,
-            DeviceType = taskReceive.DeviceType,
-            TaskType = taskReceive.TaskType,
-            IsSuccess = isSuccess,
+            Code = isSuccess ? 200 : 500,
             Message = message,
-            CompletedAt = DateTime.Now,
-            Data = new Dictionary<string, object>
-            {
-                ["action"] = "close_door",
-                ["deviceType"] = taskReceive.DeviceType.ToString(),
-                ["startTime"] = startTime,
-                ["endTime"] = endTime
-            }
+            TaskId = taskReceive.TaskId ?? 0,
+            RobotId = taskReceive.RobotId ?? 0,
+            RobotType = 2,
+            ExecutionStatus = 2, // 关门状态
+            FeedbackMessage = message,
+            StartTime = startTime,
+            EndTime = endTime,
+            VisionResult = isSuccess,
+            Weight = 0, // 可以根据需要设置重量
+            RfidResult = new List<string>()
         };
 
         return await SendTaskCompletionNotificationAsync(notification, cancellationToken);
